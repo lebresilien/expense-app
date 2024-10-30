@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Http\Request;
-use App\{User, Password};
-use App\Mail\SendCodeResetPassword;
+use App\Models\{User, Password};
+use App\Mail\SendCodeResetPasswordMail;
 use Illuminate\Support\Facades\Mail;
 
-class PasswordController extends Controller
+class PasswordController extends BaseController
 {
     public function forgot(Request $request)
     {
@@ -26,7 +26,7 @@ class PasswordController extends Controller
         $codeData = Password::create($data);
 
         // Send email to user
-        Mail::to($request->email)->send(new SendCodeResetPassword($codeData->code));
+        Mail::to($request->email)->send(new SendCodeResetPasswordMail($codeData->code));
 
         return $this->sendResponse($data, 'Password reset code sent.');
     }

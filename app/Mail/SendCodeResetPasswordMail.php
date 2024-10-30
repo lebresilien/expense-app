@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendCodeResetPassword extends Mailable
+class SendCodeResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,7 +29,7 @@ class SendCodeResetPassword extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Passord',
+            subject: 'Send Code Reset Password Mail',
         );
     }
 
@@ -39,7 +39,7 @@ class SendCodeResetPassword extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'passwords.mails.send-code-reset-password',
+            markdown: 'passwords.mails.send-code-reset-password',
         );
     }
 

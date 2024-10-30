@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\API\RegisterController;
-use App\Http\Controllers\API\SendCodeResetPassword;
+use App\Http\Controllers\API\PasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ Route::controller(RegisterController::class)->group(function($route) {
     $route->post('login', 'login');
 });
 
-Route::controller(SendCodeResetPassword::class)->prefix('password')->group(function($route) {
+Route::controller(PasswordController::class)->prefix('password')->group(function($route) {
     $route->post('email', 'forgot');
     $route->post('code/check', 'check');
     $route->post('reset', 'reset');

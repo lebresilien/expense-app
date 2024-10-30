@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Http\JsonResponse;
 
-class RegisterController extends Controller
+class RegisterController extends BaseController
 {
     /**
      * Register api
