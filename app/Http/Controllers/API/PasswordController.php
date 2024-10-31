@@ -41,9 +41,9 @@ class PasswordController extends BaseController
         $passwordReset = Password::firstWhere('code', $request->code);
 
         //Check if it has not expired: the time is one hour
-        if ($passwordReset->created_at > now()->addHour()) {
+        if (now() > ($passwordReset->created_at)->addHour()) {
             $passwordReset->delete();
-            $this->sendError('Unauthorised.', [ 'error'=> 'code expired' ]);
+            return $this->sendError('Unauthorised.', ['error' => 'code expired']);
         }
 
         return $this->sendResponse([
@@ -62,22 +62,20 @@ class PasswordController extends BaseController
          $passwordReset = Password::firstWhere('code', $request->code);
 
          //Check if it has not expired: the time is one hour
-         if ($passwordReset->created_at > now()->addHour()) {
-             $passwordReset->delete();
-             $this->sendError('Unauthorised.', [ 'error'=> 'code expired' ]);
-         }
-
-         return $this->sendResponse($data, 'valid code.');
+         if (now() > ($passwordReset->created_at)->addHour()) {
+            $passwordReset->delete();
+            $this->sendError('Unauthorised.', ['error' => 'code expired']);
+        }
 
          // find user's email
          $user = User::firstWhere('email', $passwordReset->email);
 
-         // update user password
-         $user->update($request->only('password'));
+        // update user password
+        $user->update($request->only('password'));
 
-         // delete current code
-         $passwordReset->delete();
+        // delete current code
+        $passwordReset->delete();
 
-        return $this->sendResponse($data, 'Password reset.');
+        return $this->sendResponse([], 'Password reset.');
     }
 }

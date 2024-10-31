@@ -1,10 +1,11 @@
-@component('mail::message')
-    <h1>We have received your request to reset your account password</h1>
-    <p>You can use the following code to recover your account:</p>
+<x-mail::message>
+    # Send code
 
-    @component('mail::panel')
-        {{ $code }}
-    @endcomponent
+    Vous avez initialisé une demande de renitilisation de votre mot de passe.
+    Si vous n'avez entrepris aucune action ne faite rien.
 
-    <p>The allowed duration of the code is one hour from the time the message was sent</p>
-@endcomponent
+    {{ $code }}
+
+    Thanks,<br>
+    {{ config('app.name') }}
+</x-mail::message>
