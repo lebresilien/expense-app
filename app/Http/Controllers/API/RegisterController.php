@@ -19,16 +19,11 @@ class RegisterController extends BaseController
     */
     public function register(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-            //'c_password' => 'required|same:password',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8'
         ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
@@ -60,5 +55,10 @@ class RegisterController extends BaseController
         else {
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
+    }
+
+    public function logout() {
+        auth()->user()->tokens()->delete();
+        return $this->sendResponse([], 'Log out successfully.');
     }
 }
