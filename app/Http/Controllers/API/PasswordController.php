@@ -20,7 +20,7 @@ class PasswordController extends BaseController
         Password::where('email', $request->email)->delete();
 
         // Generate random code
-        $data['code'] = mt_rand(100000, 999999);
+        $data['code'] = mt_rand(1000, 9999);
 
         // Create a new code
         $codeData = Password::create($data);
@@ -43,7 +43,7 @@ class PasswordController extends BaseController
         //Check if it has not expired: the time is one hour
         if (now() > ($passwordReset->created_at)->addHour()) {
             $passwordReset->delete();
-            return $this->sendError('Unauthorised.', ['error' => 'code expired']);
+            return $this->sendError('Code expiré.', ['error' => 'code expired']);
         }
 
         return $this->sendResponse([
@@ -55,7 +55,7 @@ class PasswordController extends BaseController
 
         $request->validate([
             'code' => 'required|string|exists:password_reset_tokens',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
          // find the code
@@ -64,7 +64,7 @@ class PasswordController extends BaseController
          //Check if it has not expired: the time is one hour
          if (now() > ($passwordReset->created_at)->addHour()) {
             $passwordReset->delete();
-            $this->sendError('Unauthorised.', ['error' => 'code expired']);
+            $this->sendError('Code expiré.', ['error' => 'code expired']);
         }
 
          // find user's email

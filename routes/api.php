@@ -17,8 +17,11 @@ use App\Http\Controllers\API\PasswordController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function ($route) {
+    $route->post('logout', [RegisterController::class, 'logout']);
+    $route->get('user', function(Request $request) {
+        return $request->user();
+    });
 });
 
 Route::controller(RegisterController::class)->group(function($route) {
