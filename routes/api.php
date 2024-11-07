@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\PasswordController;
+use App\Http\Controllers\API\GoalController;
+use App\Http\Controllers\API\SavingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +20,21 @@ use App\Http\Controllers\API\PasswordController;
 */
 
 Route::middleware('auth:sanctum')->group(function ($route) {
+
     $route->post('logout', [RegisterController::class, 'logout']);
     $route->get('user', function(Request $request) {
         return $request->user();
     });
+
+    $route->controller(GoalController::class)->prefix('goals')->group(function($r) {
+        $r->get('',  'index');
+        $r->post('store',  'store');
+        $r->get('{id}',  'show');
+        $r->patch('edit',  'update');
+        $r->delete('delete',  'destroy');
+    });
+
+    $route->post('store', [SavingController::class, 'store']);
 });
 
 Route::controller(RegisterController::class)->group(function($route) {

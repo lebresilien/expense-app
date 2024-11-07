@@ -6,11 +6,11 @@ use App\Models\User;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 
-class ClassroomRepository extends BaseRepository
+class UserRepository extends BaseRepository
 {
     protected $fieldSearchable = [
-        'email',
-        'name'
+        'name',
+        'email'
     ];
 
     public function getFieldsSearchable(): array
