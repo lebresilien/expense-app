@@ -31,7 +31,7 @@ class GoalController extends BaseController
                 'id' => $goal->id,
                 'name' => $goal->name,
                 'amount' => $goal->amount,
-                'expiredAt' => $goal->expireAt,
+                'expiredAt' => $goal->expiredAt,
                 'savingAmount' => $goal->savings->sum('amount'),
             ]);
         }
