@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('savings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('goal_id')->contrained();
-            $table->double('amount', 8, 2);
+            $table->double('amount', 12, 2);
             $table->timestamps();
             $table->softDeletes();
         });

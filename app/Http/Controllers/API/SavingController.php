@@ -4,16 +4,20 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Repository\SavingRepository;
+use App\Repositories\SavingRepository;
+use App\Repositories\GoalRepository;
+use Illuminate\Http\JsonResponse;
 
-class SavingController extends Controller
+class SavingController extends BaseController
 {
     /** @var SavingRepository */
     private $savingRepository;
+    private $goalRepository;
 
-    public function __contruct(SavingRepository $savingRepository)
+    public function __construct(SavingRepository $savingRepository, GoalRepository $goalRepository)
     {
         $this->savingRepository = $savingRepository;
+        $this->goalRepository = $goalRepository;
     }
 
     /**
@@ -30,11 +34,21 @@ class SavingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'goal_id' => ['required', 'exists:goals,id'],
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
+            'goal_id' => 'required|exists:goals,id',
+            'amount' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
         ]);
 
         $input = $request->all();
+
+        $goal = $this->goalRepository->find($input['goal_id']);
+
+        if (!$goal) return $this->sendError('Cet objectif n\'existe pas', []);
+
+        $amount = $this->savingRepository->all(['goal_id' => $input['goal_id']])->sum('amount') + $input['amount'];
+
+        if($amount > $goal->amount) {
+            return $this->sendError('Avec ce montant l\'objectif sera depassé');
+        }
 
         $saving = $this->savingRepository->create($input);
 

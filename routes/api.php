@@ -28,13 +28,13 @@ Route::middleware('auth:sanctum')->group(function ($route) {
 
     $route->controller(GoalController::class)->prefix('goals')->group(function($r) {
         $r->get('',  'index');
-        $r->post('store',  'store');
+        $r->post('',  'store');
         $r->get('{id}',  'show');
-        $r->patch('edit',  'update');
-        $r->delete('delete',  'destroy');
+        $r->patch('{id}',  'update');
+        $r->delete('{id}',  'destroy');
     });
 
-    $route->post('store', [SavingController::class, 'store']);
+    $route->post('savings', [SavingController::class, 'store']);
 });
 
 Route::controller(RegisterController::class)->group(function($route) {

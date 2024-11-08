@@ -31,7 +31,7 @@ class Goal extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function savings(): HasMany
+    public function savings()
     {
        return $this->hasMany(Saving::class);
     }

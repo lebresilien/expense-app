@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('goals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->contrained();
-            $table->string('name')->unique();
-            $table->double('amount', 8, 2);
+            $table->string('name');
+            $table->double('amount', 12, 2);
             $table->date('expiredAt');
             $table->timestamps();
             $table->softDeletes();

@@ -2,13 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\Saving;
+use App\Models\Goal;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 
-class SavingRepository extends BaseRepository
+class GoalRepository extends BaseRepository
 {
     protected $fieldSearchable = [
+        'name',
         'amount'
     ];
 
@@ -19,7 +20,7 @@ class SavingRepository extends BaseRepository
 
     public function model(): string
     {
-        return Saving::class;
+        return Goal::class;
     }
 
 }
