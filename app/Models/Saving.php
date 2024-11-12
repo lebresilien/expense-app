@@ -12,7 +12,8 @@ class Saving extends Model
 
     protected $fillable = [
         'amount',
-        'goal_id'
+        'goal_id',
+        'day'
     ];
 
     protected $dates = [ 'deleted_at' ];

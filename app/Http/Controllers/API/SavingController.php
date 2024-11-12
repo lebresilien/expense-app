@@ -36,6 +36,7 @@ class SavingController extends BaseController
         $request->validate([
             'goal_id' => 'required|exists:goals,id',
             'amount' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+            'day' => 'required|date',
         ]);
 
         $input = $request->all();
