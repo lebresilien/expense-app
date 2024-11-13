@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class SavingRepository extends BaseRepository
 {
     protected $fieldSearchable = [
-        'amount'
+        'amount',
+        'goal_id',
+        'day'
     ];
 
     public function getFieldsSearchable(): array

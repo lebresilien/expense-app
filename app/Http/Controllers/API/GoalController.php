@@ -116,7 +116,13 @@ class GoalController extends BaseController
 
         if (!$goal) return $this->sendError('Aucun Objectif trouvé', []);
 
-        if($goal->saving) $goal->saving->delete();
+        if($goal->savings) $goal->savings->each->delete();
+
+        /* if($goal->saving) {
+            $goal->saving->map(function($item) {
+                $item->delete();
+            });
+        } */
         $this->goalRepository->delete($id);
 
         return $this->sendResponse([], 'Suppression');
