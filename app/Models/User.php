@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
        return $this->hasMany(Goal::class);
     }
+
+    public function transactions(): HasMany
+    {
+        return $this->belongsTo(Transaction::class);
+    }
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\PasswordController;
 use App\Http\Controllers\API\GoalController;
 use App\Http\Controllers\API\SavingController;
+use App\Http\Controllers\API\TransactionController;
+use App\Http\Controllers\API\TypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +37,16 @@ Route::middleware('auth:sanctum')->group(function ($route) {
     });
 
     $route->post('savings', [SavingController::class, 'store']);
+
+    $route->post('types', [TypeController::class, 'index']);
+
+    $route->controller(TransactionController::class)->prefix('transactions')->group(function($r) {
+        $r->get('',  'index');
+        $r->post('',  'store');
+        $r->get('{id}',  'show');
+        //$r->patch('{id}',  'update');
+        $r->delete('{id}',  'destroy');
+    });
 });
 
 Route::controller(RegisterController::class)->group(function($route) {
