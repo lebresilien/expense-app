@@ -32,6 +32,14 @@ class TypeController extends BaseController
      */
     public function store(Request $request): JsonResponse
     {
+        $request->validate([
+            'name' => 'required|unique:types,name',
+        ]);
 
+        $input = $request->all();
+
+        $data = $this->typeRepository->create($input);
+
+        return $this->sendResponse($data, 'Opération reussie');
     }
 }

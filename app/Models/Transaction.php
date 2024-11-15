@@ -26,8 +26,8 @@ class Transaction extends Model
         'description' => 'string',
         'amount' => 'double',
         'date' => 'date:Y-m-d',
-        'user_id' => 'number',
-        'type_id' => 'number',
+        'user_id' => 'string',
+        'type_id' => 'string',
     ];
 
     public function user(): BelongsTo

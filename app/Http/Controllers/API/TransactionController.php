@@ -6,7 +6,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\TypeRepository;
-use App\Repositories\Transactionepository;
+use App\Repositories\TransactionRepository;
 
 class TransactionController extends BaseController
 {
@@ -16,18 +16,18 @@ class TransactionController extends BaseController
 
     public function __construct(TransactionRepository $transactionRepository, TypeRepository $typeRepository)
     {
-        $this->savingRepository = $savingRepository;
+        $this->transactionRepository = $transactionRepository;
         $this->typeRepository = $typeRepository;
     }
 
      /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, $type_id): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $data = $this->transactionRepository->all([
             'user_id' => $request->user()->id,
-            'type_id' => $type_id
+            'type_id' => $request->type_id
         ]);
         return $this->sendResponse($data, 'List');
     }
@@ -39,14 +39,23 @@ class TransactionController extends BaseController
     {
         $request->validate([
             'type_id' => 'required|exists:types,id',
-            'name' => 'requirired|date|after_or_equal:'. now()->format('Y-m-d'),
-            'amount' => 'ed',
-            'date' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
-            'description' => 'nullable',
+            'date' => 'required|date|after_or_equal:'. now()->format('Y-m-d'),
+            'name' => 'required|min:3',
+            'amount' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+            'description' => 'sometimes|required',
         ]);
 
         $input = $request->all();
         $input['user_id'] = $request->user()->id;
+
+        $item = $this->transactionRepository->all([
+            'name' => $input['name'],
+            'date' => $input['date'],
+            'type_id' => $input['type_id'],
+            'amount' => $input['amount'],
+        ])->first();
+
+        if($item) return $this->sendError('Cette transaction existe deja', []);
 
         $data = $this->transactionRepository->create($input);
 
@@ -56,7 +65,7 @@ class TransactionController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $id)
     {
         $data = $this->transactionRepository->find($id);
 

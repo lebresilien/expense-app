@@ -6,13 +6,14 @@ use App\Models\Transaction;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 
-class TypeRepository extends BaseRepository
+class TransactionRepository extends BaseRepository
 {
     protected $fieldSearchable = [
         'name',
         'user_id',
         'type_id',
-        'amount'
+        'amount',
+        'date'
     ];
 
     public function getFieldsSearchable(): array

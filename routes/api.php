@@ -38,7 +38,8 @@ Route::middleware('auth:sanctum')->group(function ($route) {
 
     $route->post('savings', [SavingController::class, 'store']);
 
-    $route->post('types', [TypeController::class, 'index']);
+    $route->get('types', [TypeController::class, 'index']);
+    $route->post('types', [TypeController::class, 'store']);
 
     $route->controller(TransactionController::class)->prefix('transactions')->group(function($r) {
         $r->get('',  'index');
