@@ -23,12 +23,25 @@ class TransactionController extends BaseController
      /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
-        $data = $this->transactionRepository->all([
+        $incomes = $this->transactionRepository->all([
             'user_id' => $request->user()->id,
-            'type_id' => $request->type_id
+            'type_id' => 1
         ]);
+
+        $expenses = $this->transactionRepository->all([
+            'user_id' => $request->user()->id,
+            'type_id' => 2
+        ]);
+
+        $data = [
+            'incomes' => $incomes,
+            'totalIncomes' => $incomes->sum('amount'),
+            'expenses' => $expenses,
+            'totalExpenses' => $expenses->sum('amount'),
+        ];
+
         return $this->sendResponse($data, 'List');
     }
 
@@ -39,7 +52,7 @@ class TransactionController extends BaseController
     {
         $request->validate([
             'type_id' => 'required|exists:types,id',
-            'date' => 'required|date|after_or_equal:'. now()->format('Y-m-d'),
+            'date' => 'required|date|before_or_equal:'. now()->format('Y-m-d'),
             'name' => 'required|min:3',
             'amount' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
             'description' => 'sometimes|required',
