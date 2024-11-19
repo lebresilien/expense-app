@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\TypeRepository;
 use App\Repositories\TransactionRepository;
+use Carbon\Carbon;
 
 class TransactionController extends BaseController
 {
@@ -23,24 +24,9 @@ class TransactionController extends BaseController
      /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $incomes = $this->transactionRepository->all([
-            'user_id' => $request->user()->id,
-            'type_id' => 1
-        ]);
-
-        $expenses = $this->transactionRepository->all([
-            'user_id' => $request->user()->id,
-            'type_id' => 2
-        ]);
-
-        $data = [
-            'incomes' => $incomes,
-            'totalIncomes' => $incomes->sum('amount'),
-            'expenses' => $expenses,
-            'totalExpenses' => $expenses->sum('amount'),
-        ];
+        $data = $this->transactionRepository->list($request->user()->id, $request->start = null, $request->end = null);
 
         return $this->sendResponse($data, 'List');
     }

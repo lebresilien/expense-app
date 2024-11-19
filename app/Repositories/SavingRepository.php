@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Saving;
 use App\Repositories\BaseRepository;
-use Illuminate\Support\Facades\Auth;
 
 class SavingRepository extends BaseRepository
 {

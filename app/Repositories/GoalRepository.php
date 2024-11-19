@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Goal;
 use App\Repositories\BaseRepository;
-use Illuminate\Support\Facades\Auth;
 
 class GoalRepository extends BaseRepository
 {

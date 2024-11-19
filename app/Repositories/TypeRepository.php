@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Type;
 use App\Repositories\BaseRepository;
-use Illuminate\Support\Facades\Auth;
 
 class TypeRepository extends BaseRepository
 {

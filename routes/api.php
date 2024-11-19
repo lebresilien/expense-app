@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function ($route) {
     $route->post('types', [TypeController::class, 'store']);
 
     $route->controller(TransactionController::class)->prefix('transactions')->group(function($r) {
-        $r->get('',  'index');
+        $r->get('{start?}/{end?}',  'index');
         $r->post('',  'store');
         $r->get('{id}',  'show');
         //$r->patch('{id}',  'update');
