@@ -26,7 +26,7 @@ class TransactionController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $data = $this->transactionRepository->list($request->user()->id, $request->start = null, $request->end = null);
+        $data = $this->transactionRepository->list($request->user()->id, $request->start, $request->end);
 
         return $this->sendResponse($data, 'List');
     }

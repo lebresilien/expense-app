@@ -27,25 +27,30 @@ class TransactionRepository extends BaseRepository
         return Transaction::class;
     }
 
-    public function list($user_id, $start, $end) {
+    public function list($user_id, $start = null, $end = null) {
 
+        $startDate = Carbon::parse($start);
+        $endDate = Carbon::parse($end);
+
+        $formattedStartDate = $startDate->format('Y-m-d');
+        $formattedEndDate = $endDate->format('Y-m-d');
 
         $incomes = Transaction::where('user_id', $user_id)
                                 ->where('type_id', 1)
-                                ->whereBetween('date', [ $start ? $start : Carbon::now()->firstOfMonth(), $start ? $start : Carbon::now()->lastOfMonth()])
+                                ->whereBetween('date', [ $start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
                                 ->get();
 
         $expenses = Transaction::where('user_id', $user_id)
                                 ->where('type_id', 2)
-                                ->whereBetween('date', [ $start ? $start : Carbon::now()->firstOfMonth(), $start ? $start : Carbon::now()->lastOfMonth()])
+                                ->whereBetween('date', [ $start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
                                 ->get();
 
         $months = Transaction::select(DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'))
                             ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
                             ->get()->map((function($item) {
                                 return [
-                                    'startMonth' => Carbon::create($item['year'], $item['month'])->firstOfMonth()->toDateString(),
-                                    'endMonth' => Carbon::create($item['year'], $item['month'])->lastOfMonth()->toDateString()
+                                    'startMonth' => Carbon::create($item['year'], $item['month'])->firstOfMonth()->format('d M Y'),
+                                    'endMonth' => Carbon::create($item['year'], $item['month'])->lastOfMonth()->format('d M Y')
                                 ];
                             }));
 
