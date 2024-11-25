@@ -53,6 +53,8 @@ class SavingController extends BaseController
 
         $saving = $this->savingRepository->create($input);
 
+        if($amount == $goal->amount) $goal->update(['status' => true]);
+
         return $this->sendResponse($saving, 'Opération reussie');
     }
 

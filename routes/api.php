@@ -9,6 +9,7 @@ use App\Http\Controllers\API\GoalController;
 use App\Http\Controllers\API\SavingController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TypeController;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,3 +63,12 @@ Route::controller(PasswordController::class)->prefix('password')->group(function
 });
 
 Route::post('/upload', FileUploadController::class);
+
+Route::get('test', function() {
+    echo Carbon::now()->addDays(5)->format('Y-m-d') . '-' . Carbon::parse('2024-11-30')->format('Y-m-d');
+    //sreturn Carbon::now()->addDays(5)->format('Y-m-d');
+    if(Carbon::parse(Carbon::now()->addDays(5)->format('Y-m-d'))->eq(Carbon::parse('2024-11-29'))) {
+        return 'lflf';
+    }
+    return 'hello';
+});

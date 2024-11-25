@@ -14,7 +14,8 @@ class Goal extends Model
         'name',
         'amount',
         'expiredAt',
-        'user_id'
+        'user_id',
+        'status'
     ];
 
     protected $dates = [ 'deleted_at' ];
@@ -24,6 +25,7 @@ class Goal extends Model
         'amount' => 'double',
         'expiredAt' => 'date:Y-m-d',
         'created_at' => 'datetime:Y-m-d',
+        'status' => 'boolean'
     ];
 
     public function user(): BelongsTo
@@ -34,5 +36,10 @@ class Goal extends Model
     public function savings()
     {
        return $this->hasMany(Saving::class);
+    }
+
+    public function notifications()
+    {
+       return $this->hasMany(Notification::class);
     }
 }
