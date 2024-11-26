@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Transaction::class);
     }
+
+    public function categories(): HasMany
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

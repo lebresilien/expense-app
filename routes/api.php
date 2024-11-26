@@ -9,6 +9,7 @@ use App\Http\Controllers\API\GoalController;
 use App\Http\Controllers\API\SavingController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TypeController;
+use App\Http\Controllers\API\CategoryController;
 use Carbon\Carbon;
 
 /*
@@ -47,6 +48,13 @@ Route::middleware('auth:sanctum')->group(function ($route) {
         $r->post('',  'store');
         $r->get('{id}',  'show');
         //$r->patch('{id}',  'update');
+        $r->delete('{id}',  'destroy');
+    });
+
+    $route->controller(CategoryController::class)->prefix('categories')->group(function($r) {
+        $r->get('',  'index');
+        $r->post('',  'store');
+        $r->get('{id}',  'show');
         $r->delete('{id}',  'destroy');
     });
 });
