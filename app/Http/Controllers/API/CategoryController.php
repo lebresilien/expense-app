@@ -81,9 +81,11 @@ class CategoryController extends BaseController
      */
     public function destroy(string $id)
     {
-        $data = $this->categoryRepository->find($id);
+        $category = $this->categoryRepository->find($id);
 
-        if (!$data) return $this->sendError('Aucune transaction trouvée', []);
+        if (!$category) return $this->sendError('Aucune transaction trouvée', []);
+
+        if($category->transactions->count() > 0) return $this->sendError('Cette Categorie ne peut etre supprimée', []);
 
         $this->categoryRepository->delete($id);
 

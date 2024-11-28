@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Transaction;
+use App\Models\{ Transaction, Type };
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use DB;
@@ -35,13 +35,16 @@ class TransactionRepository extends BaseRepository
         $formattedStartDate = $startDate->format('Y-m-d');
         $formattedEndDate = $endDate->format('Y-m-d');
 
+        $type_income = Type::find(1)->categories->pluck('id');
+        $type_expense = Type::find(2)->categories->pluck('id');
+
         $incomes = Transaction::where('user_id', $user_id)
-                                ->where('type_id', 1)
+                                ->whereIn('category_id', $type_income)
                                 ->whereBetween('date', [ $start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
                                 ->get();
 
         $expenses = Transaction::where('user_id', $user_id)
-                                ->where('type_id', 2)
+                                ->whereIn('category_id', $type_expense)
                                 ->whereBetween('date', [ $start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
                                 ->get();
 

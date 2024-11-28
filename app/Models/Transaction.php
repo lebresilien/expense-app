@@ -15,7 +15,8 @@ class Transaction extends Model
         'amount',
         'date',
         'user_id',
-        'type_id',
+        //'type_id',
+        'category_id',
         'description'
     ];
 
@@ -27,7 +28,7 @@ class Transaction extends Model
         'amount' => 'double',
         'date' => 'date:Y-m-d',
         'user_id' => 'string',
-        'type_id' => 'string',
+        'category_id' => 'string',
     ];
 
     public function user(): BelongsTo
@@ -35,9 +36,9 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function type(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Category::class);
     }
 
 }

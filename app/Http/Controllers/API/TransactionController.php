@@ -37,7 +37,7 @@ class TransactionController extends BaseController
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'type_id' => 'required|exists:types,id',
+            'category_id' => 'required|exists:categories,id',
             'date' => 'required|date|before_or_equal:'. now()->format('Y-m-d'),
             'name' => 'required|min:3',
             'amount' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
@@ -50,7 +50,7 @@ class TransactionController extends BaseController
         $item = $this->transactionRepository->all([
             'name' => $input['name'],
             'date' => $input['date'],
-            'type_id' => $input['type_id'],
+            'category_id' => $input['category_id'],
             'amount' => $input['amount'],
         ])->first();
 

@@ -21,8 +21,8 @@ class Type extends Model
         'created_at' => 'datetime:Y-m-d',
     ];
 
-    public function transactions(): HasMany
+    public function categories(): HasMany
     {
-        return $this->belongsTo(HasMany::class);
+        return $this->belongsTo(Category::class);
     }
 }
