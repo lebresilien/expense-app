@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\TypeRepository;
 use App\Repositories\TransactionRepository;
+use App\Repositories\CategoryRepository;
 use Carbon\Carbon;
 
 class TransactionController extends BaseController
@@ -14,11 +15,17 @@ class TransactionController extends BaseController
     /** @var TransactionRepository */
     private $transactionRepository;
     private $typeRepository;
+    private $categoryRepository;
 
-    public function __construct(TransactionRepository $transactionRepository, TypeRepository $typeRepository)
+    public function __construct(
+        TransactionRepository $transactionRepository,
+        TypeRepository $typeRepository,
+        CategoryRepository $categoryRepository
+    )
     {
         $this->transactionRepository = $transactionRepository;
         $this->typeRepository = $typeRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
      /**
@@ -27,6 +34,16 @@ class TransactionController extends BaseController
     public function index(Request $request): JsonResponse
     {
         $data = $this->transactionRepository->list($request->user()->id, $request->start, $request->end);
+
+        $data['categoryExpenses']  = $this->categoryRepository->all([
+            'user_id' => $request->user()->id,
+            'type_id' => 1
+        ]);
+
+        $data['categoryIncomes'] = $this->categoryRepository->all([
+            'user_id' => $request->user()->id,
+            'type_id' => 2
+        ]);
 
         return $this->sendResponse($data, 'List');
     }
