@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->contrained();
-            $table->foreignId('type_id')->contrained();
+            $table->foreignId('category_id')->contrained();
             $table->string('name');
             $table->double('amount');
             $table->string('description')->nullable();

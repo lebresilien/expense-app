@@ -40,9 +40,6 @@ Route::middleware('auth:sanctum')->group(function ($route) {
 
     $route->post('savings', [SavingController::class, 'store']);
 
-    $route->get('types', [TypeController::class, 'index']);
-    $route->post('types', [TypeController::class, 'store']);
-
     $route->controller(TransactionController::class)->prefix('transactions')->group(function($r) {
         $r->get('',  'index');
         $r->post('',  'store');
@@ -69,6 +66,9 @@ Route::controller(PasswordController::class)->prefix('password')->group(function
     $route->post('code/check', 'check');
     $route->post('reset', 'reset');
 });
+
+Route::get('types', [TypeController::class, 'index']);
+Route::post('types', [TypeController::class, 'store']);
 
 Route::post('/upload', FileUploadController::class);
 

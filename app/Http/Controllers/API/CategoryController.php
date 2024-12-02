@@ -24,12 +24,12 @@ class CategoryController extends BaseController
     {
         $incomes  = $this->categoryRepository->all([
             'user_id' => $request->user()->id,
-            'type_id' => 1
+            'type_id' => 2
         ]);
 
         $expenses  = $this->categoryRepository->all([
             'user_id' => $request->user()->id,
-            'type_id' => 2
+            'type_id' => 1
         ]);
 
         return $this->sendResponse([
