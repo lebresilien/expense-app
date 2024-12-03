@@ -35,7 +35,7 @@ class TransactionController extends BaseController
     {
         $data = $this->transactionRepository->list($request->user()->id, $request->start, $request->end);
 
-        $data['categoryExpenses']  = $this->categoryRepository->all([
+        $data['categoryExpenses'] = $this->categoryRepository->all([
             'user_id' => $request->user()->id,
             'type_id' => 1
         ]);
