@@ -33,7 +33,7 @@ class TransactionController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $data = $this->transactionRepository->list($request->user()->id, $request->start, $request->end);
+        $data = $this->transactionRepository->list($request->user()->id, $request->start, $request->end, $request->type);
 
         $data['categoryExpenses'] = $this->categoryRepository->all([
             'user_id' => $request->user()->id,
@@ -102,5 +102,11 @@ class TransactionController extends BaseController
         $this->transactionRepository->delete($id);
 
         return $this->sendResponse([], 'Suppression');
+    }
+
+    public function statistics(Request $request) {
+
+        return $data = $this->transactionRepository->statistics($request->type);
+
     }
 }

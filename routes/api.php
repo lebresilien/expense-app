@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function ($route) {
         $r->get('{id}',  'show');
         //$r->patch('{id}',  'update');
         $r->delete('{id}',  'destroy');
+        $r->get('statistics',  'statistics');
     });
 
     $route->controller(CategoryController::class)->prefix('categories')->group(function($r) {
@@ -73,10 +74,11 @@ Route::post('types', [TypeController::class, 'store']);
 Route::post('/upload', FileUploadController::class);
 
 Route::get('test', function() {
+    return Carbon::now()->format('m');
     echo Carbon::now()->addDays(5)->format('Y-m-d') . '-' . Carbon::parse('2024-11-30')->format('Y-m-d');
     //sreturn Carbon::now()->addDays(5)->format('Y-m-d');
     if(Carbon::parse(Carbon::now()->addDays(5)->format('Y-m-d'))->eq(Carbon::parse('2024-11-29'))) {
         return 'lflf';
     }
-    return 'hello';
+
 });
