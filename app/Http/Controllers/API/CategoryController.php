@@ -45,11 +45,19 @@ class CategoryController extends BaseController
     {
         $request->validate([
             'type_id' => 'required|exists:types,id',
-            'name' => 'required|min:3|unique:categories,name,'. $request->user()->id
+            'name' => 'required|min:3'
         ]);
 
         $input = $request->all();
         $input['user_id'] = $request->user()->id;
+
+        $category = $this->categoryRepository->all([
+            'name' => $input['name'],
+            'type_id' => $input['type_id'],
+            'user_id' => $input['user_id']
+        ]);
+
+        if($category) return $this->sendError('Cette categorie existe deja');
 
         $data = $this->categoryRepository->create($input);
 
