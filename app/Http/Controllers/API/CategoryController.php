@@ -41,7 +41,7 @@ class CategoryController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $request->validate([
             'type_id' => 'required|exists:types,id',
@@ -57,7 +57,7 @@ class CategoryController extends BaseController
             'user_id' => $input['user_id']
         ]);
 
-        if($category) return $this->sendError('Cette categorie existe deja');
+        if(count($category) > 0) return $this->sendError('Cette categorie existe deja');
 
         $data = $this->categoryRepository->create($input);
 
