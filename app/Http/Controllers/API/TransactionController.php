@@ -31,9 +31,10 @@ class TransactionController extends BaseController
      /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
-        $data = $this->transactionRepository->list($request->user()->id, $request->start, $request->end, $request->type);
+
+        $data = $this->transactionRepository->list($request->user()->id, $request->start, $request->end, $request->type, $request->date);
 
         $data['categoryExpenses'] = $this->categoryRepository->all([
             'user_id' => $request->user()->id,

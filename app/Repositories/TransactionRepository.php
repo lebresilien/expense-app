@@ -29,6 +29,21 @@ class TransactionRepository extends BaseRepository
 
     public function list($user_id, $start = null, $end = null, $type = null, $date = null) {
 
+        $month_shorts = [
+            'Jan' => 1,
+            'Feb' => 2,
+            'Mar' => 3,
+            'Apr' => 4,
+            'May' => 5,
+            'Jun' => 6,
+            'Jul' => 7,
+            'Aug' => 8,
+            'Sep' => 9,
+            'Oct' => 10,
+            'Nov' => 11,
+            'Dec' => 12
+        ];
+
         $startDate = Carbon::parse($start);
         $endDate = Carbon::parse($end);
 
@@ -42,12 +57,12 @@ class TransactionRepository extends BaseRepository
 
             $incomes = Transaction::where('user_id', $user_id)
                                     ->whereIn('category_id', $type_income)
-                                    ->whereBetween('date', [ $start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
+                                    ->whereBetween('date', [$start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
                                     ->get();
 
             $expenses = Transaction::where('user_id', $user_id)
                                     ->whereIn('category_id', $type_expense)
-                                    ->whereBetween('date', [ $start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
+                                    ->whereBetween('date', [$start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
                                     ->get();
 
             $months = Transaction::select(DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'))
@@ -85,52 +100,56 @@ class TransactionRepository extends BaseRepository
                         ->groupBy(DB::raw('YEAR(date)'))
                         ->get()->pluck('year');
 
-            Category::where('type_id', 1)->with(['transactions' => function($query) use ($date) {
-                $query->whereMonth('date', $date ? explode($date)[0] : Carbon::now()->format('m'))
-                        ->whereYear('date', $date ? explode($date)[1] : Carbon::now()->format('Y'));
-            }])->get()->map(function($item) use ($array_data_month) {
-                if($item->transactions->sum('amount') > 0) {
-                    $array_data_month->push([
-                        'name' => $item->name,
-                        'amount' => $item->transactions->sum('amount'),
-                        'color' => 'red',
-                        'legendFontColor' => '#7F7F7F',
-                        'legendFontSize' => 15
-                    ]);
-                }
-            });
+            //if($type === "month") {
 
-            $stat_expenses_month = Transaction::whereIn('category_id', $type_expense)
-                                ->whereMonth('date', $date ? explode($date)[0] : Carbon::now()->format('m'))
-                                ->whereYear('date', $date ? explode($date)[1] : Carbon::now()->format('Y'))
+                Category::where('type_id', 1)->with(['transactions' => function($query) use ($date, $type, $month_shorts) {
+                    $query->whereMonth('date', $date && $type === "month" ? $month_shorts[explode(' ', $date)[0]] : Carbon::now()->format('m'))
+                            ->whereYear('date', $date && $type === "month" ? explode(' ', $date)[1] : Carbon::now()->format('Y'));
+                }])->get()->map(function($item) use ($array_data_month) {
+                    if($item->transactions->sum('amount') > 0) {
+                        $array_data_month->push([
+                            'name' => $item->name,
+                            'amount' => $item->transactions->sum('amount'),
+                            'color' => 'red',
+                            'legendFontColor' => '#7F7F7F',
+                            'legendFontSize' => 15
+                        ]);
+                    }
+                });
+
+                $stat_expenses_month = Transaction::whereIn('category_id', $type_expense)
+                                    ->whereMonth('date', $date && $type === "month" ? $month_shorts[explode(' ', $date)[0]] : Carbon::now()->format('m'))
+                                    ->whereYear('date', $date && $type === "month" ? explode(' ', $date)[1] : Carbon::now()->format('Y'))
+                                    ->get()->sum('amount');
+
+                $stat_incomes_month = Transaction::whereIn('category_id', $type_income)
+                                    ->whereMonth('date', $date && $type === "month" ? $month_shorts[explode(' ', $date)[0]] : Carbon::now()->format('m'))
+                                    ->whereYear('date', $date && $type === "month" ? explode(' ', $date)[1] : Carbon::now()->format('Y'))
+                                    ->get()->sum('amount');
+            //} else {
+
+                Category::where('type_id', 1)->with(['transactions' => function($query) use ($date, $type) {
+                    $query->whereYear('date', $date && $type === "year" ? $date : Carbon::now()->format('Y'));
+                }])->get()->map(function($item) use ($array_data_year) {
+                    if($item->transactions->sum('amount') > 0) {
+                        $array_data_year->push([
+                            'name' => $item->name,
+                            'amount' => $item->transactions->sum('amount'),
+                            'color' => 'red',
+                            'legendFontColor' => '#7F7F7F',
+                            'legendFontSize' => 15
+                        ]);
+                    }
+                });
+
+                $stat_expenses_year = Transaction::whereIn('category_id', $type_expense)
+                                    ->whereYear('date', $date && $type === "year" ? $date : Carbon::now()->format('Y'))
+                                    ->get()->sum('amount');
+
+                $stat_incomes_year = Transaction::whereIn('category_id', $type_income)
+                                ->whereYear('date', $date && $type === "year" ? $date : Carbon::now()->format('Y'))
                                 ->get()->sum('amount');
-
-            $stat_incomes_month = Transaction::whereIn('category_id', $type_income)
-                                ->whereMonth('date', $date ? explode($date)[0] : Carbon::now()->format('m'))
-                                ->whereYear('date', $date ? explode($date)[1] : Carbon::now()->format('Y'))
-                                ->get()->sum('amount');
-
-            Category::where('type_id', 1)->with(['transactions' => function($query) use ($date) {
-                $query->whereYear('date', $date ? $date : Carbon::now()->format('Y'));
-            }])->get()->map(function($item) use ($array_data_year) {
-                if($item->transactions->sum('amount') > 0) {
-                    $array_data_year->push([
-                        'name' => $item->name,
-                        'amount' => $item->transactions->sum('amount'),
-                        'color' => 'red',
-                        'legendFontColor' => '#7F7F7F',
-                        'legendFontSize' => 15
-                    ]);
-                }
-            });
-
-            $stat_expenses_year = Transaction::whereIn('category_id', $type_expense)
-                                ->whereYear('date', $date ? explode($date)[1] : Carbon::now()->format('Y'))
-                                ->get()->sum('amount');
-
-            $stat_incomes_year = Transaction::whereIn('category_id', $type_income)
-                                ->whereYear('date', $date ? $date : Carbon::now()->format('Y'))
-                                ->get()->sum('amount');
+            //}
 
             $data = [
                 'months' => $months,
