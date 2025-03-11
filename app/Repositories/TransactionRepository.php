@@ -53,6 +53,8 @@ class TransactionRepository extends BaseRepository
         $type_income = Type::find(2)->categories->pluck('id');
         $type_expense = Type::find(1)->categories->pluck('id');
 
+
+
         if(!$type) {
 
             $incomes = Transaction::where('user_id', $user_id)
@@ -64,6 +66,22 @@ class TransactionRepository extends BaseRepository
                                     ->whereIn('category_id', $type_expense)
                                     ->whereBetween('date', [$start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
                                     ->get();
+
+            $incomes_categories = Transaction::select('categories.id as id', 'categories.name as name', DB::raw('SUM(amount) as amount'))
+                                            ->where('transactions.user_id', $user_id)
+                                            ->whereBetween('date', [$start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
+                                            ->whereIn('category_id', $type_income)
+                                            ->join('categories', 'categories.id', '=', 'transactions.category_id')
+                                            ->groupBy('category_id')
+                                            ->get();
+
+            $expenses_categories = Transaction::select('categories.id as id', 'categories.name as name', DB::raw('SUM(amount) as amount'))
+                                            ->where('transactions.user_id', $user_id)
+                                            ->whereBetween('date', [$start ? $formattedStartDate : Carbon::now()->firstOfMonth(), $start ? $formattedEndDate : Carbon::now()->lastOfMonth()])
+                                            ->whereIn('category_id', $type_expense)
+                                            ->join('categories', 'categories.id', '=', 'transactions.category_id')
+                                            ->groupBy('category_id')
+                                            ->get();
 
             $months = Transaction::select(DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'))
                                 ->where('user_id', $user_id)
@@ -82,7 +100,9 @@ class TransactionRepository extends BaseRepository
                 'totalExpenses' => $expenses->sum('amount'),
                 'startMonth' => Carbon::now()->firstOfMonth()->format('d M Y'),
                 'endMonth' => Carbon::now()->lastOfMonth()->format('d M Y'),
-                'months' => $months
+                'months' => $months,
+                'expenses_categories' => $expenses_categories,
+                'incomes_categories' => $incomes_categories
             ];
         } else {
 
