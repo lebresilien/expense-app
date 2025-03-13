@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function ($route) {
     $route->controller(CategoryController::class)->prefix('categories')->group(function($r) {
         $r->get('',  'index');
         $r->post('',  'store');
-        $r->get('{id}',  'show');
+        $r->get('{id}/{start}/{end}',  'show');
         $r->delete('{id}',  'destroy');
     });
 });

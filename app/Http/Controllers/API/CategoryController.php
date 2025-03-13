@@ -6,6 +6,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Http\Request;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\JsonResponse;
+use Carbon\Carbon;
 
 class CategoryController extends BaseController
 {
@@ -67,11 +68,26 @@ class CategoryController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, $start, $end)
     {
+        $startDate = Carbon::parse($start)->format('Y-m-d');
+        $endDate = Carbon::parse($end)->format('Y-m-d');
+
         $data = $this->categoryRepository->find($id);
 
         if (!$data) return $this->sendError('Aucune transaction trouvée', []);
+
+
+        $array = [];
+        foreach($data->transactions->whereBetween('date', [$startDate, $endDate]) as $item) {
+            array_push($array, $item);
+        }
+
+        $data = [
+            "type" => $data->type->id,
+            "name" => $data->name,
+            "data" => $array
+        ];
 
         return $this->sendResponse($data, 'Détails');
     }
